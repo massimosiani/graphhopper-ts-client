@@ -44,5 +44,5 @@ const ghOptimization = new GraphHopperOptimization({key, profile});
 ghOptimization.addPoint({lng: -0.103512, lat: 51.503634});
 ghOptimization.addPoint({lng: -0.074673, lat: 51.519339});
 ghOptimization.addPoint({lng: -0.103168, lat: 51.52681});
-ghRouting.doVRPRequest(1);
+ghOptimization.doVRPRequest(1);
 ```
