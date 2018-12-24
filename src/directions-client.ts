@@ -1,4 +1,4 @@
-import * as request from 'superagent';
+const request = require('superagent');
 import GHUtil from './GHUtil';
 
 export class GraphHopperOptimization {
