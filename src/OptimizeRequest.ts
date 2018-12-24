@@ -1,4 +1,8 @@
 export interface Configuration {
+    routing: Routing;
+}
+
+export interface Routing {
     calc_points?: boolean;
     network_data_provider?: 'openstreetmap' | 'tomtom';
     consider_traffic?: boolean;
@@ -6,8 +10,20 @@ export interface Configuration {
 }
 
 export interface Objective {
-    type: 'min' | 'min-max';
-    value: 'transport_time' | 'completion_time' | 'vehicles' | 'activities';
+    type?: 'min' | 'min-max';
+    value?: 'transport_time' | 'completion_time' | 'vehicles' | 'activities';
+}
+
+export interface Data {
+    times: number[][];
+    distances: number[][];
+}
+
+export interface CostMatrix {
+    profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
+    type?: string;
+    location_ids?: string[];
+    data?: Data;
 }
 
 export interface Address {
@@ -56,24 +72,37 @@ export interface TimeWindow {
     latest: number;
 }
 
-export interface Service {
+export interface ServiceCommon {
     id: string;
-    type?: 'service' | 'pickup' | 'delivery';
     name?: string;
-    address: Address;
-    duration?: number;
     size?: number[];
-    time_windows?: TimeWindow[];
     required_skills?: string[];
     allowed_vehicles?: string[];
     disallowed_vehicles?: string[];
     priority?: number;
+    max_time_in_vehicle?: number;
+}
+
+export interface PickupDelivery {
+    address: Address;
+    duration?: number;
+    time_windows?: TimeWindow[];
     preparation_time?: number;
 }
 
+export interface Service extends ServiceCommon, PickupDelivery {
+    type?: 'service' | 'pickup' | 'delivery';
+}
+
+export interface Shipment extends ServiceCommon {
+    pickup: PickupDelivery;
+    delivery: PickupDelivery;
+}
+
 export interface OptimizeRequest {
-    configuration: Configuration;
+    configuration?: Configuration;
     objectives?: Objective[];
+    cost_matrices?: CostMatrix[];
     services?: Service[];
     vehicles: Vehicle[];
     vehicle_types?: VehicleType[];

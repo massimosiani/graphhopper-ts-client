@@ -1,5 +1,6 @@
 const request = require('superagent');
 import GHUtil from './GHUtil';
+import { OptimizeRequest } from './OptimizeRequest';
 import { OptimizeResponse } from './OptimizeResponse';
 import Point from './Point';
 import { SolutionResponse } from './SolutionResponse';
@@ -8,13 +9,16 @@ export class GraphHopperOptimization {
     points: any[];
     private host: string;
     private key: string;
-    private profile: string;
+    private profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
     private basePath: string;
     private waitInMillis: number;
     private timeout: number;
     private postTimeout: number;
 
-    constructor(args: { key: string; profile: string; }) {
+    constructor(args: {
+            key: string;
+            profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
+        }) {
         this.points = [];
         this.host = 'https://graphhopper.com/api/1';
         this.key = args.key;
@@ -71,10 +75,11 @@ export class GraphHopperOptimization {
             });
         }
 
-        const jsonInput = {
-            algorithm: {
-                problem_type: 'min-max'
-            },
+        const jsonInput: OptimizeRequest = {
+            objectives: [{
+                type: 'min-max',
+                value: 'completion_time'
+            }],
             vehicles: list,
             vehicle_types: [{
                 type_id: '_vtype_1',
@@ -87,14 +92,7 @@ export class GraphHopperOptimization {
         return this.doRequest(jsonInput, null);
     }
 
-    doRequest(
-        jsonInput: {
-            algorithm?: { 'problem_type': string; };
-            vehicles: any; vehicle_types: any;
-            services: any; cost_matrices?: any;
-            configuration?: any; shipments?: any;
-        },
-        reqArgs: undefined): Promise<SolutionResponse> {
+    doRequest(jsonInput: OptimizeRequest, reqArgs: undefined): Promise<SolutionResponse> {
         const vehicleTypeProfileMap = {};
         const vehicleTypeMap = {};
         const vehicleProfileMap = {};
