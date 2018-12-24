@@ -38,7 +38,7 @@ export class GraphHopperOptimization {
         return this.doVRPRequest(1);
     }
 
-    doVRPRequest(vehicles: number) {
+    doVRPRequest(vehicles: number): Promise<SolutionResponse> {
         const firstPoint = this.points[0];
         const servicesArray = [];
         this.points.forEach((point, pointIndex) => {
@@ -94,7 +94,7 @@ export class GraphHopperOptimization {
             services: any; cost_matrices?: any;
             configuration?: any; shipments?: any;
         },
-        reqArgs: undefined) {
+        reqArgs: undefined): Promise<SolutionResponse> {
         const vehicleTypeProfileMap = {};
         const vehicleTypeMap = {};
         const vehicleProfileMap = {};
