@@ -1,9 +1,11 @@
 const request = require('superagent');
 import GHUtil from './GHUtil';
+import { OptimizeResponse } from './OptimizeResponse';
 import Point from './Point';
+import { SolutionResponse } from './SolutionResponse';
 
 export class GraphHopperOptimization {
-    points: Array<any>;
+    points: any[];
     private host: string;
     private key: string;
     private profile: string;
@@ -219,7 +221,7 @@ export class GraphHopperOptimization {
                 .accept('application/json; charset=utf-8')
                 .type('application/json')
                 .timeout(args.postTimeout)
-                .end((err: any, res: { ok: any; body: { job_id: string; }; }) => {
+                .end((err: any, res: { ok: boolean; body: OptimizeResponse; }) => {
                     if (err || !res.ok) {
                         reject(GHUtil.extractError(res, url));
                     } else if (res) {
@@ -232,16 +234,16 @@ export class GraphHopperOptimization {
         });
     }
 
-    private pollTrigger(solutionUrl, timeout, timerRet, url, reject, resolve) {
+    private pollTrigger(solutionUrl: string, timeout: number, timerRet, url: string, reject, resolve) {
         request
             .get(solutionUrl)
             .accept('application/json')
             .timeout(timeout)
-            .end((err: any, res: { ok: any; body: { status: string; message: any; }; }) => {
+            .end((err: any, res: { ok: boolean; body: SolutionResponse; }) => {
                 if (err || !res.ok || res.body === undefined) {
                     clearInterval(timerRet);
                     reject(GHUtil.extractError(res, url));
-                } else if (res && (res.body.status === 'finished' || res.body.message)) {
+                } else if (res && (res.body.status === 'finished')) {
                     clearInterval(timerRet);
                     resolve(res.body);
                 }
