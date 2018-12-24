@@ -21,10 +21,18 @@ Then you are ready to instantiate the object and call the API:
 ```
 const args = { key: 'your_key', profile: 'car' };
 const ghOptimization = new GHOptimization.GraphHopperOptimization(args);
-ghOptimization.addPoint({lng: -0.103512, lat: 51.503634});
-ghOptimization.addPoint({lng: -0.074673, lat: 51.519339});
-ghOptimization.addPoint({lng: -0.103168, lat: 51.52681});
-ghOptimization.doVRPRequest(1);
+ghOptimization.addPoint({ lng: -0.103512, lat: 51.503634 });
+ghOptimization.addPoint({ lng: -0.074673, lat: 51.519339 });
+ghOptimization.addPoint({ lng: -0.103168, lat: 51.52681 });
+ghOptimization.addVehicle({
+    vehicle_id: `_vehicle_0`,
+    start_address: {
+        location_id: '_start_location',
+        lon: -0.103512,
+        lat: 51.503634
+    }
+});
+ghOptimization.doVRPRequest();
 ```
 
 ### NPM
@@ -40,9 +48,21 @@ import { GraphHopperOptimization } from 'graphhopper-ts-client';
 const key = "[Sign-up for free and get your own key: https://www.graphhopper.com/products/]";
 const profile = "car";
 
-const ghOptimization = new GraphHopperOptimization({key, profile});
-ghOptimization.addPoint({lng: -0.103512, lat: 51.503634});
-ghOptimization.addPoint({lng: -0.074673, lat: 51.519339});
-ghOptimization.addPoint({lng: -0.103168, lat: 51.52681});
-ghOptimization.doVRPRequest(1);
+const ghOptimization = new GHOptimization.GraphHopperOptimization(args);
+ghOptimization.addPoint({ lng: -0.103512, lat: 51.503634 });
+ghOptimization.addPoint({ lng: -0.074673, lat: 51.519339 });
+ghOptimization.addPoint({ lng: -0.103168, lat: 51.52681 });
+ghOptimization.addVehicle({
+    vehicle_id: `_vehicle_0`,
+    start_address: {
+        location_id: '_start_location',
+        lon: -0.103512,
+        lat: 51.503634
+    }
+});
+ghOptimization.doVRPRequest();
 ```
+
+## Example
+
+An example can be found in the [test/index.html](./test/index.html) file.

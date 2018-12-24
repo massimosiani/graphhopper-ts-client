@@ -35,7 +35,9 @@ const config: webpack.Configuration = {
     plugins: [
         new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
-            title: 'Development'
+            title: 'Development',
+            template: './test/index.html',
+            inject: 'head'
         })
     ],
     resolve: {

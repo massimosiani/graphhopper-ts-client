@@ -1,92 +1,90 @@
 const request = require('superagent');
 import GHUtil from './GHUtil';
-import { OptimizeRequest } from './OptimizeRequest';
+import { OptimizeRequest, Service, Vehicle, VehicleType } from './OptimizeRequest';
 import { OptimizeResponse } from './OptimizeResponse';
 import Point from './Point';
 import { SolutionResponse } from './SolutionResponse';
 
 export class GraphHopperOptimization {
-    points: any[];
+    private basePath: string = '/vrp';
     private host: string;
     private key: string;
+    private postTimeout: number = 15000;
     private profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
-    private basePath: string;
-    private waitInMillis: number;
-    private timeout: number;
-    private postTimeout: number;
+    private services: Service[] = [];
+    private vehicles: Vehicle[] = [];
+    private vehicleTypes: VehicleType[] = [];
+    private waitInMillis: number = 1000;
 
     constructor(args: {
             key: string;
             profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
         }) {
-        this.points = [];
         this.host = 'https://graphhopper.com/api/1';
         this.key = args.key;
         this.profile = args.profile;
-        this.basePath = '/vrp';
-        this.waitInMillis = 1000;
-        this.timeout = 10000;
-        this.postTimeout = 15000;
         GHUtil.copyProperties(args, this);
     }
 
     addPoint(input: Point) {
-        this.points.push(input);
+        const service: Service = {
+            id: '_' + this.services.length,
+            type: 'pickup',
+            address: {
+                location_id: '_location_' + this.services.length,
+                lat: input.lat,
+                lon: input.lng
+            }
+        };
+        this.services.push(service);
+    }
+
+    addService(service: Service) {
+        this.services.push(service);
+    }
+
+    addVehicle(vehicle: Vehicle) {
+        if (!vehicle.type_id) {
+            vehicle.type_id = '_vtype_1';
+        }
+        this.vehicles.push(vehicle);
+    }
+
+    addVehicleType(vehicleType: VehicleType) {
+        this.vehicleTypes.push(vehicleType);
     }
 
     clear() {
-        this.points.length = 0;
+        this.services.length = 0;
+        this.vehicles.length = 0;
+        this.vehicleTypes.length = 0;
     }
 
     doTSPRequest() {
-        return this.doVRPRequest(1);
+        this.vehicles.length = 0;
+        this.addVehicle({
+            vehicle_id: `_vehicle_0`,
+            start_address: {
+                location_id: '_start_location',
+                lon: this.services[0].address.lon,
+                lat: this.services[0].address.lat
+            }
+        });
+        return this.doVRPRequest();
     }
 
-    doVRPRequest(vehicles: number): Promise<SolutionResponse> {
-        const firstPoint = this.points[0];
-        const servicesArray = [];
-        this.points.forEach((point, pointIndex) => {
-            if (pointIndex < 1) {
-                return;
-            }
-            const obj = {
-                id: '_' + pointIndex,
-                type: 'pickup',
-                name: 'maintenance ' + pointIndex,
-                address: {
-                    location_id: '_location_' + pointIndex,
-                    lon: point.lng,
-                    lat: point.lat
-                }
-            };
-            servicesArray.push(obj);
-        });
-
-        const list = [];
-        for (let i = 0; i < vehicles; i++) {
-            list.push({
-                vehicle_id: '_vehicle_' + i,
-                start_address: {
-                    location_id: '_start_location',
-                    lon: firstPoint.lng,
-                    lat: firstPoint.lat
-                },
-                type_id: '_vtype_1'
-            });
-        }
-
+    doVRPRequest(): Promise<SolutionResponse> {
         const jsonInput: OptimizeRequest = {
             objectives: [{
                 type: 'min-max',
                 value: 'completion_time'
             }],
-            vehicles: list,
-            vehicle_types: [{
+            vehicles: this.vehicles,
+            vehicle_types: this.vehicleTypes.concat({
                 type_id: '_vtype_1',
                 profile: this.profile
-            }],
-            services: servicesArray
-
+            }),
+            services: this.services
         };
 
         return this.doRequest(jsonInput, null);
