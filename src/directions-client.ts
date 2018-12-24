@@ -92,7 +92,8 @@ export class GraphHopperOptimization {
             algorithm?: { 'problem_type': string; };
             vehicles: any; vehicle_types: any;
             services: any; cost_matrices?: any;
-            configuration?: any; shipments?: any; },
+            configuration?: any; shipments?: any;
+        },
         reqArgs: undefined) {
         const vehicleTypeProfileMap = {};
         const vehicleTypeMap = {};
@@ -208,30 +209,31 @@ export class GraphHopperOptimization {
     private doRawRequest(jsonInput: any, reqArgs: any) {
         return new Promise(
             (resolve: { (arg0: any): void; (arg0: any): void; }, reject: { (arg0: any): void; (arg0: any): void; }) => {
-            let args = GHUtil.clone(this);
-            if (reqArgs) {
-                args = GHUtil.copyProperties(reqArgs, args);
-            }
+                let args = GHUtil.clone(this);
+                if (reqArgs) {
+                    args = GHUtil.copyProperties(reqArgs, args);
+                }
 
-            const url = args.host + args.basePath + '/optimize?key=' + args.key;
+                const url = args.host + args.basePath + '/optimize?key=' + args.key;
 
-            request
-                .post(url)
-                .send(JSON.stringify(jsonInput))
-                .accept('application/json; charset=utf-8')
-                .type('application/json')
-                .timeout(args.postTimeout)
-                .end((err: any, res: { ok: boolean; body: OptimizeResponse; }) => {
-                    if (err || !res.ok) {
-                        reject(GHUtil.extractError(res, url));
-                    } else if (res) {
-                        const solutionUrl = `${args.host}${args.basePath}/solution/${res.body.job_id}?key=${args.key}`;
-                        const timerRet: number = window.setInterval(
-                            () => this.pollTrigger(
-                                solutionUrl, args.postTimeout, timerRet, url, reject, resolve), this.waitInMillis);
-                    }
-                });
-        });
+                request
+                    .post(url)
+                    .send(JSON.stringify(jsonInput))
+                    .accept('application/json; charset=utf-8')
+                    .type('application/json')
+                    .timeout(args.postTimeout)
+                    .end((err: any, res: { ok: boolean; body: OptimizeResponse; }) => {
+                        if (err || !res.ok) {
+                            reject(GHUtil.extractError(res, url));
+                        } else if (res) {
+                            const solutionUrl =
+                                `${args.host}${args.basePath}/solution/${res.body.job_id}?key=${args.key}`;
+                            const timerRet: number = window.setInterval(
+                                () => this.pollTrigger(
+                                    solutionUrl, args.postTimeout, timerRet, url, reject, resolve), this.waitInMillis);
+                        }
+                    });
+            });
     }
 
     private pollTrigger(solutionUrl: string, timeout: number, timerRet, url: string, reject, resolve) {
