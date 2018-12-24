@@ -4,14 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config: webpack.Configuration = {
     entry: {
-        optimization: `./src/directions-client.ts`
+        'gh-optimization-client': `./src/optimization-client.ts`
     },
     output: {
         path: `${__dirname}/dist`,
         filename: '[name].bundle.js',
         chunkFilename: '[name].chunk.js',
         sourceMapFilename: '[name].js.map',
-        library: 'optimization',
+        library: 'GHOptimization',
         libraryTarget: 'window'
     },
     mode: 'development',
