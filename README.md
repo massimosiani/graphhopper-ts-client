@@ -20,11 +20,11 @@ in your html, for instance:
 Then you are ready to instantiate the object and call the API:
 ```
 const args = { key: 'your_key', profile: 'car' };
-const optimization = new optimization.GraphHopperOptimization(args);
-optimization.addPoint({lng: -0.103512, lat: 51.503634});
-optimization.addPoint({lng: -0.074673, lat: 51.519339});
-optimization.addPoint({lng: -0.103168, lat: 51.52681});
-optimization.doVRPRequest(1);
+const ghOptimization = new optimization.GraphHopperOptimization(args);
+ghOptimization.addPoint({lng: -0.103512, lat: 51.503634});
+ghOptimization.addPoint({lng: -0.074673, lat: 51.519339});
+ghOptimization.addPoint({lng: -0.103168, lat: 51.52681});
+ghOptimization.doVRPRequest(1);
 ```
 
 ### NPM
