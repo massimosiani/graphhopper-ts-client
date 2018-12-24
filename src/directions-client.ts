@@ -1,5 +1,6 @@
 const request = require('superagent');
 import GHUtil from './GHUtil';
+import Point from './Point';
 
 export class GraphHopperOptimization {
     points: Array<any>;
@@ -23,7 +24,7 @@ export class GraphHopperOptimization {
         GHUtil.copyProperties(args, this);
     }
 
-    addPoint(input: any) {
+    addPoint(input: Point) {
         this.points.push(input);
     }
 
@@ -203,7 +204,6 @@ export class GraphHopperOptimization {
     }
 
     private doRawRequest(jsonInput: any, reqArgs: any) {
-
         return new Promise(
             (resolve: { (arg0: any): void; (arg0: any): void; }, reject: { (arg0: any): void; (arg0: any): void; }) => {
             let args = GHUtil.clone(this);
