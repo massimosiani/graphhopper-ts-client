@@ -7,7 +7,7 @@
     "rulesDirectory": [
     ],
     "rules": {
-      "array-type": [true, "generic"],
+      "array-type": [true, "array-simple"],
       "arrow-parens": false,
       "arrow-return-shorthand": true,
       "component-class-suffix": true,
