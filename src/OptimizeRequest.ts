@@ -104,6 +104,7 @@ export interface OptimizeRequest {
     objectives?: Objective[];
     cost_matrices?: CostMatrix[];
     services?: Service[];
+    shipments?: Shipment[];
     vehicles: Vehicle[];
     vehicle_types?: VehicleType[];
 }
