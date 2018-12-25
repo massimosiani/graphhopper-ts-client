@@ -1,7 +1,7 @@
 const request = require('superagent');
-import { Profile } from 'src';
 import { Address } from './Address';
 import GHUtil from './GHUtil';
+import { Profile } from './index';
 import { Break, OptimizeRequest, Service, Shipment, Vehicle, VehicleType } from './OptimizeRequest';
 import { OptimizeResponse } from './OptimizeResponse';
 import Point from './Point';
