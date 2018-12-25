@@ -13,7 +13,7 @@ export interface Objective {
     type?: 'min' | 'min-max';
     value?: 'transport_time' | 'completion_time' | 'vehicles' | 'activities';
 }
-export interface Data {
+export interface CostMatrixData {
     times: number[][];
     distances: number[][];
 }
@@ -21,15 +21,15 @@ export interface CostMatrix {
     profile: Profile;
     type?: string;
     location_ids?: string[];
-    data?: Data;
+    data?: CostMatrixData;
 }
 export interface Break {
-    earliest: number;
-    latest: number;
-    max_driving_time: number;
+    earliest?: number;
+    latest?: number;
+    max_driving_time?: number;
     duration: number;
-    possible_split: number[];
-    initial_driving_time: number;
+    possible_split?: number[];
+    initial_driving_time?: number;
 }
 export interface Vehicle {
     vehicle_id: string;

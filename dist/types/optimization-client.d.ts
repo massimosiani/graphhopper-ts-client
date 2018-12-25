@@ -1,4 +1,4 @@
-import { Profile } from 'src';
+import { Profile } from './index';
 import { OptimizeRequest, Service, Vehicle, VehicleType } from './OptimizeRequest';
 import Point from './Point';
 import { SolutionResponse } from './SolutionResponse';
