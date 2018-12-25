@@ -1,3 +1,5 @@
+import { Break, Service, Shipment } from './OptimizeRequest';
+
 export interface Point {
     coordinates: number[][];
     type: string;
@@ -39,9 +41,9 @@ export interface Route {
 }
 
 export interface Unassigned {
-    services: any[];
-    shipments: any[];
-    breaks: any[];
+    services: Service[];
+    shipments: Shipment[];
+    breaks: Break[];
     details: any[];
 }
 

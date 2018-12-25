@@ -170,7 +170,6 @@ export class GraphHopperOptimization {
                         act.address = locationMap[act.location_id];
                         if (act.id) {
                             const driverBreak = breakMap[act.id];
-                            // console.log(act.id + ' ' + driverBreak);
                             if (driverBreak) {
                                 act.break = breakMap[act.id];
                             } else if (serviceMap[act.id]) {
