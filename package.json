@@ -1,5 +1,5 @@
 {
-  "name": "graphhopper-types",
+  "name": "graphhopper-ts-client",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "./node_modules/.bin/webpack --display-error-details --config webpack.dev.ts --watch"
   },
-  "author": "",
+  "author": {
+    "name": "Massimo Siani",
+    "url": "https://github.com/massimosiani"
+  },
   "license": "ISC",
   "dependencies": {
     "superagent": "^4.0.0"
