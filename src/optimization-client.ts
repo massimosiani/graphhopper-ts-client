@@ -1,6 +1,7 @@
 const request = require('superagent');
+import { Profile } from 'src';
 import GHUtil from './GHUtil';
-import { OptimizeRequest, Service, Vehicle, VehicleType } from './OptimizeRequest';
+import { Address, Break, OptimizeRequest, Service, Shipment, Vehicle, VehicleType } from './OptimizeRequest';
 import { OptimizeResponse } from './OptimizeResponse';
 import Point from './Point';
 import { SolutionResponse } from './SolutionResponse';
@@ -10,7 +11,7 @@ export class GraphHopperOptimization {
     private host: string;
     private key: string;
     private postTimeout: number = 15000;
-    private profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
+    private profile: Profile;
     private services: Service[] = [];
     private vehicles: Vehicle[] = [];
     private vehicleTypes: VehicleType[] = [];
@@ -18,7 +19,7 @@ export class GraphHopperOptimization {
 
     constructor(args: {
             key: string;
-            profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
+            profile: Profile;
         }) {
         this.host = 'https://graphhopper.com/api/1';
         this.key = args.key;
@@ -90,13 +91,13 @@ export class GraphHopperOptimization {
         return this.doRequest(jsonInput, null);
     }
 
-    doRequest(jsonInput: OptimizeRequest, reqArgs: undefined): Promise<SolutionResponse> {
-        const vehicleTypeProfileMap = {};
-        const vehicleTypeMap = {};
-        const vehicleProfileMap = {};
-        const serviceMap = {};
-        const shipmentMap = {};
-        const locationMap = {};
+    doRequest(jsonInput: OptimizeRequest, reqArgs: any): Promise<SolutionResponse> {
+        const vehicleTypeProfileMap: { [x: string]: Profile } = {};
+        const vehicleTypeMap: { [x: string]: VehicleType } = {};
+        const vehicleProfileMap: { [x: string]: Profile } = {};
+        const serviceMap: { [x: string]: Service } = {};
+        const shipmentMap: { [x: string]: Shipment } = {};
+        const locationMap: { [x: string]: Address } = {};
         const hasCustomCostMatrix = jsonInput.cost_matrices && jsonInput.cost_matrices.length > 0;
         const hasGeometries = jsonInput.configuration && !hasCustomCostMatrix &&
             jsonInput.configuration.routing.calc_points === true;
@@ -129,14 +130,13 @@ export class GraphHopperOptimization {
             }
         }
 
-        const breakMap = {};
-        const vehicleMap = {};
+        const breakMap: { [x: string]: Break } = {};
+        const vehicleMap: { [x: string]: Vehicle } = {};
         if (jsonInput.vehicles) {
             for (const vehicle of jsonInput.vehicles) {
                 vehicleMap[vehicle.vehicle_id] = vehicle;
-                let profile = null;
                 if (vehicle.type_id !== null) {
-                    profile = vehicleTypeProfileMap[vehicle.type_id];
+                    const profile = vehicleTypeProfileMap[vehicle.type_id as string];
                     vehicleProfileMap[vehicle.vehicle_id] = profile !== null ? profile : 'car';
                 } else {
                     vehicleProfileMap[vehicle.vehicle_id] = 'car';
@@ -180,7 +180,7 @@ export class GraphHopperOptimization {
                         } else {
                             const vehicle = vehicleMap[vehicleId];
                             act.vehicle = vehicle;
-                            act.vehicle_type = vehicleTypeMap[vehicle.type_id];
+                            act.vehicle_type = vehicleTypeMap[vehicle.type_id as string];
                         }
                     }
                 }
@@ -231,7 +231,8 @@ export class GraphHopperOptimization {
             });
     }
 
-    private pollTrigger(solutionUrl: string, timeout: number, timerRet, url: string, reject, resolve) {
+    private pollTrigger(
+        solutionUrl: string, timeout: number, timerRet: number, url: string, reject: any, resolve: any) {
         request
             .get(solutionUrl)
             .accept('application/json')

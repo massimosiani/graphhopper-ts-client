@@ -14,6 +14,7 @@
       "directive-class-suffix": true,
       "interface-name": false,
       "member-access": [true, "no-public"],
+      "new-parens": false,
       "newline-before-return": false,
       "no-angle-bracket-type-assertion": false,
       "no-attribute-parameter-decorator": true,

@@ -12,7 +12,7 @@ const config: webpack.Configuration = {
         chunkFilename: '[name].chunk.js',
         sourceMapFilename: '[name].js.map',
         library: 'GHOptimization',
-        libraryTarget: 'window'
+        libraryTarget: 'var'
     },
     mode: 'development',
     module: {

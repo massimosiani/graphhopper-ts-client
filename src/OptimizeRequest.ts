@@ -1,3 +1,5 @@
+import { Profile } from 'src';
+
 export interface Configuration {
     routing: Routing;
 }
@@ -20,7 +22,7 @@ export interface Data {
 }
 
 export interface CostMatrix {
-    profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
+    profile: Profile;
     type?: string;
     location_ids?: string[];
     data?: Data;
@@ -61,7 +63,7 @@ export interface Vehicle {
 
 export interface VehicleType {
     type_id: string;
-    profile?: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
+    profile: Profile;
     capacity?: number[];
     speed_factor?: number;
     service_time_factor?: number;

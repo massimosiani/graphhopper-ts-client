@@ -1,3 +1,4 @@
+import { Profile } from 'src';
 import { OptimizeRequest, Service, Vehicle, VehicleType } from './OptimizeRequest';
 import Point from './Point';
 import { SolutionResponse } from './SolutionResponse';
@@ -13,7 +14,7 @@ export declare class GraphHopperOptimization {
     private waitInMillis;
     constructor(args: {
         key: string;
-        profile: 'car' | 'small_truck' | 'truck' | 'scooter' | 'foot' | 'hike' | 'bike' | 'mtb' | 'racingbike';
+        profile: Profile;
     });
     addPoint(input: Point): void;
     addService(service: Service): void;
@@ -22,7 +23,7 @@ export declare class GraphHopperOptimization {
     clear(): void;
     doTSPRequest(): Promise<SolutionResponse>;
     doVRPRequest(): Promise<SolutionResponse>;
-    doRequest(jsonInput: OptimizeRequest, reqArgs: undefined): Promise<SolutionResponse>;
+    doRequest(jsonInput: OptimizeRequest, reqArgs: any): Promise<SolutionResponse>;
     private doRawRequest;
     private pollTrigger;
 }
