@@ -4,7 +4,7 @@
   "description": "A GraphHopper API client written in TypeScript",
   "keywords": ["GraphHopper", "Map"],
   "main": "dist/gh-optimization-client.js",
-  "types": "dist/*.d.ts",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "./node_modules/.bin/webpack --config webpack.prod.ts",
     "start": "./node_modules/.bin/webpack-dev-server --open --config webpack.dev.ts",

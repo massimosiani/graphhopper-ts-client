@@ -7,12 +7,12 @@ const config: webpack.Configuration = {
         'gh-optimization-client': `./src/optimization-client.ts`
     },
     output: {
-        path: `${__dirname}/dist`,
+        path: `${__dirname}/dist/esm5`,
         filename: '[name].bundle.js',
         chunkFilename: '[name].chunk.js',
         sourceMapFilename: '[name].js.map',
         library: 'GHOptimization',
-        libraryTarget: 'var'
+        libraryTarget: 'commonjs'
     },
     mode: 'development',
     module: {

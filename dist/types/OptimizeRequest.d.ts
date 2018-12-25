@@ -1,4 +1,5 @@
-import { Profile } from 'src';
+import { Address } from './Address';
+import { Profile } from './index';
 export interface Configuration {
     routing: Routing;
 }
@@ -21,13 +22,6 @@ export interface CostMatrix {
     type?: string;
     location_ids?: string[];
     data?: Data;
-}
-export interface Address {
-    location_id: string;
-    lon: number;
-    lat: number;
-    name?: string;
-    street_hint?: string;
 }
 export interface Break {
     earliest: number;

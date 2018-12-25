@@ -4,12 +4,16 @@
         "target": "es5",
         "allowSyntheticDefaultImports": true,
         "declaration": true,
+        "declarationDir": "dist/types",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "importHelpers": true,
         "noEmitHelpers": true,
         "noEmitOnError": true,
+        "outDir": "dist/esm5",
         "strict": true,
-        "outDir": "dist",
+        "stripInternal": true,
         "lib": [
             "es6",
             "dom",
@@ -17,7 +21,7 @@
         ],
         "baseUrl": "."
     },
-    "include": ["src"],
+    "include": ["./src"],
     "exclude": [
         "node_modules",
         "webpack.*"

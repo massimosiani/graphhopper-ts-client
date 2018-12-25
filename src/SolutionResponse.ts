@@ -1,14 +1,9 @@
+import { Address } from './Address';
 import { Break, Service, Shipment } from './OptimizeRequest';
 
 export interface Point {
     coordinates: number[][];
     type: string;
-}
-
-export interface Address {
-    location_id: string;
-    lat: number;
-    lon: number;
 }
 
 export interface Activity {
