@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "A GraphHopper API client written in TypeScript",
   "keywords": ["GraphHopper", "Map"],
-  "main": "dist/gh-optimization-client.js",
+  "main": "dist/gh-optimization-client.bundle.js",
+  "module": "./esm5/gh-optimization-client.bundle.js",
+  "es2015": "./esm2015/gh-optimization-client.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --config webpack.prod.ts",
+    "build": "./node_modules/.bin/webpack --config webpack.prod.ts && tsc --target es2018 --outDir dist/esm2015",
     "start": "./node_modules/.bin/webpack-dev-server --open --config webpack.dev.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "./node_modules/.bin/webpack --display-error-details --config webpack.dev.ts --watch"

@@ -1,35 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
 const request = require('superagent');
-import { Profile } from 'src';
-import { Address } from './Address';
-import GHUtil from './GHUtil';
-import { Break, OptimizeRequest, Service, Shipment, Vehicle, VehicleType } from './OptimizeRequest';
-import { OptimizeResponse } from './OptimizeResponse';
-import Point from './Point';
-import { SolutionResponse } from './SolutionResponse';
-
-export class GraphHopperOptimization {
-    private basePath: string = '/vrp';
-    private host: string;
-    private key: string;
-    private postTimeout: number = 15000;
-    private profile: Profile;
-    private services: Service[] = [];
-    private vehicles: Vehicle[] = [];
-    private vehicleTypes: VehicleType[] = [];
-    private waitInMillis: number = 1000;
-
-    constructor(args: {
-            key: string;
-            profile: Profile;
-        }) {
+const GHUtil_1 = tslib_1.__importDefault(require("./GHUtil"));
+class GraphHopperOptimization {
+    constructor(args) {
+        this.basePath = '/vrp';
+        this.postTimeout = 15000;
+        this.services = [];
+        this.vehicles = [];
+        this.vehicleTypes = [];
+        this.waitInMillis = 1000;
         this.host = 'https://graphhopper.com/api/1';
         this.key = args.key;
         this.profile = args.profile;
-        GHUtil.copyProperties(args, this);
+        GHUtil_1.default.copyProperties(args, this);
     }
-
-    addPoint(input: Point) {
-        const service: Service = {
+    addPoint(input) {
+        const service = {
             id: '_' + this.services.length,
             type: 'pickup',
             address: {
@@ -40,28 +28,23 @@ export class GraphHopperOptimization {
         };
         this.services.push(service);
     }
-
-    addService(service: Service) {
+    addService(service) {
         this.services.push(service);
     }
-
-    addVehicle(vehicle: Vehicle) {
+    addVehicle(vehicle) {
         if (!vehicle.type_id) {
             vehicle.type_id = '_vtype_1';
         }
         this.vehicles.push(vehicle);
     }
-
-    addVehicleType(vehicleType: VehicleType) {
+    addVehicleType(vehicleType) {
         this.vehicleTypes.push(vehicleType);
     }
-
     clear() {
         this.services.length = 0;
         this.vehicles.length = 0;
         this.vehicleTypes.length = 0;
     }
-
     doTSPRequest() {
         this.vehicles.length = 0;
         this.addVehicle({
@@ -74,13 +57,12 @@ export class GraphHopperOptimization {
         });
         return this.doVRPRequest();
     }
-
-    doVRPRequest(): Promise<SolutionResponse> {
-        const jsonInput: OptimizeRequest = {
+    doVRPRequest() {
+        const jsonInput = {
             objectives: [{
-                type: 'min-max',
-                value: 'completion_time'
-            }],
+                    type: 'min-max',
+                    value: 'completion_time'
+                }],
             vehicles: this.vehicles,
             vehicle_types: this.vehicleTypes.concat({
                 type_id: '_vtype_1',
@@ -88,41 +70,35 @@ export class GraphHopperOptimization {
             }),
             services: this.services
         };
-
         return this.doRequest(jsonInput, null);
     }
-
-    doRequest(jsonInput: OptimizeRequest, reqArgs: any): Promise<SolutionResponse> {
-        const vehicleTypeProfileMap: { [x: string]: Profile } = {};
-        const vehicleTypeMap: { [x: string]: VehicleType } = {};
-        const vehicleProfileMap: { [x: string]: Profile } = {};
-        const serviceMap: { [x: string]: Service } = {};
-        const shipmentMap: { [x: string]: Shipment } = {};
-        const locationMap: { [x: string]: Address } = {};
+    doRequest(jsonInput, reqArgs) {
+        const vehicleTypeProfileMap = {};
+        const vehicleTypeMap = {};
+        const vehicleProfileMap = {};
+        const serviceMap = {};
+        const shipmentMap = {};
+        const locationMap = {};
         const hasCustomCostMatrix = jsonInput.cost_matrices && jsonInput.cost_matrices.length > 0;
         const hasGeometries = jsonInput.configuration && !hasCustomCostMatrix &&
             jsonInput.configuration.routing.calc_points === true;
-
         if (!hasGeometries) {
             if (!jsonInput.configuration && !hasCustomCostMatrix) {
                 jsonInput.configuration = { routing: { calc_points: true } };
             }
         }
-
         if (jsonInput.vehicle_types) {
             for (const type of jsonInput.vehicle_types) {
                 vehicleTypeProfileMap[type.type_id] = type.profile;
                 vehicleTypeMap[type.type_id] = type;
             }
         }
-
         if (jsonInput.services) {
             for (const service of jsonInput.services) {
                 locationMap[service.address.location_id] = service.address;
                 serviceMap[service.id] = service;
             }
         }
-
         if (jsonInput.shipments) {
             for (const shipment of jsonInput.shipments) {
                 locationMap[shipment.pickup.address.location_id] = shipment.pickup.address;
@@ -130,19 +106,18 @@ export class GraphHopperOptimization {
                 shipmentMap[shipment.id] = shipment;
             }
         }
-
-        const breakMap: { [x: string]: Break } = {};
-        const vehicleMap: { [x: string]: Vehicle } = {};
+        const breakMap = {};
+        const vehicleMap = {};
         if (jsonInput.vehicles) {
             for (const vehicle of jsonInput.vehicles) {
                 vehicleMap[vehicle.vehicle_id] = vehicle;
                 if (vehicle.type_id !== null) {
-                    const profile = vehicleTypeProfileMap[vehicle.type_id as string];
+                    const profile = vehicleTypeProfileMap[vehicle.type_id];
                     vehicleProfileMap[vehicle.vehicle_id] = profile !== null ? profile : 'car';
-                } else {
+                }
+                else {
                     vehicleProfileMap[vehicle.vehicle_id] = 'car';
                 }
-
                 if (vehicle.start_address) {
                     locationMap[vehicle.start_address.location_id] = vehicle.start_address;
                 }
@@ -155,14 +130,12 @@ export class GraphHopperOptimization {
                 }
             }
         }
-
         const promise = this.doRawRequest(jsonInput, reqArgs);
-        promise.then((json: { solution: any; raw_solution: any; }) => {
+        promise.then((json) => {
             if (json.solution) {
                 const sol = json.solution;
                 json.raw_solution = JSON.parse(JSON.stringify(sol));
                 sol.calc_points = hasGeometries;
-
                 for (const route of sol.routes) {
                     const vehicleId = route.vehicle_id;
                     const profile = vehicleProfileMap[vehicleId];
@@ -173,15 +146,18 @@ export class GraphHopperOptimization {
                             const driverBreak = breakMap[act.id];
                             if (driverBreak) {
                                 act.break = breakMap[act.id];
-                            } else if (serviceMap[act.id]) {
+                            }
+                            else if (serviceMap[act.id]) {
                                 act.service = serviceMap[act.id];
-                            } else if (shipmentMap[act.id]) {
+                            }
+                            else if (shipmentMap[act.id]) {
                                 act.shipment = shipmentMap[act.id];
                             }
-                        } else {
+                        }
+                        else {
                             const vehicle = vehicleMap[vehicleId];
                             act.vehicle = vehicle;
-                            act.vehicle_type = vehicleTypeMap[vehicle.type_id as string];
+                            act.vehicle_type = vehicleTypeMap[vehicle.type_id];
                         }
                     }
                 }
@@ -190,7 +166,6 @@ export class GraphHopperOptimization {
                     unassignedServices.push(serviceMap[serviceId]);
                 }
                 sol.unassigned_services = unassignedServices;
-
                 const unassignedShipments = new Array();
                 for (const shipmentId of sol.unassigned.shipments) {
                     unassignedShipments.push(shipmentMap[shipmentId]);
@@ -201,51 +176,45 @@ export class GraphHopperOptimization {
         });
         return promise;
     }
-
-    private doRawRequest(jsonInput: any, reqArgs: any) {
-        return new Promise(
-            (resolve: { (arg0: any): void; (arg0: any): void; }, reject: { (arg0: any): void; (arg0: any): void; }) => {
-                let args = GHUtil.clone(this);
-                if (reqArgs) {
-                    args = GHUtil.copyProperties(reqArgs, args);
+    doRawRequest(jsonInput, reqArgs) {
+        return new Promise((resolve, reject) => {
+            let args = GHUtil_1.default.clone(this);
+            if (reqArgs) {
+                args = GHUtil_1.default.copyProperties(reqArgs, args);
+            }
+            const url = args.host + args.basePath + '/optimize?key=' + args.key;
+            request
+                .post(url)
+                .send(JSON.stringify(jsonInput))
+                .accept('application/json; charset=utf-8')
+                .type('application/json')
+                .timeout(args.postTimeout)
+                .end((err, res) => {
+                if (err || !res.ok) {
+                    reject(GHUtil_1.default.extractError(res, url));
                 }
-
-                const url = args.host + args.basePath + '/optimize?key=' + args.key;
-
-                request
-                    .post(url)
-                    .send(JSON.stringify(jsonInput))
-                    .accept('application/json; charset=utf-8')
-                    .type('application/json')
-                    .timeout(args.postTimeout)
-                    .end((err: any, res: { ok: boolean; body: OptimizeResponse; }) => {
-                        if (err || !res.ok) {
-                            reject(GHUtil.extractError(res, url));
-                        } else if (res) {
-                            const solutionUrl =
-                                `${args.host}${args.basePath}/solution/${res.body.job_id}?key=${args.key}`;
-                            const timerRet: any = setInterval(
-                                () => this.pollTrigger(
-                                    solutionUrl, args.postTimeout, timerRet, url, reject, resolve), this.waitInMillis);
-                        }
-                    });
+                else if (res) {
+                    const solutionUrl = `${args.host}${args.basePath}/solution/${res.body.job_id}?key=${args.key}`;
+                    const timerRet = setInterval(() => this.pollTrigger(solutionUrl, args.postTimeout, timerRet, url, reject, resolve), this.waitInMillis);
+                }
             });
+        });
     }
-
-    private pollTrigger(
-        solutionUrl: string, timeout: number, timerRet: any, url: string, reject: any, resolve: any) {
+    pollTrigger(solutionUrl, timeout, timerRet, url, reject, resolve) {
         request
             .get(solutionUrl)
             .accept('application/json')
             .timeout(timeout)
-            .end((err: any, res: { ok: boolean; body: SolutionResponse; }) => {
-                if (err || !res.ok || res.body === undefined) {
-                    clearInterval(timerRet);
-                    reject(GHUtil.extractError(res, url));
-                } else if (res && (res.body.status === 'finished')) {
-                    clearInterval(timerRet);
-                    resolve(res.body);
-                }
-            });
+            .end((err, res) => {
+            if (err || !res.ok || res.body === undefined) {
+                clearInterval(timerRet);
+                reject(GHUtil_1.default.extractError(res, url));
+            }
+            else if (res && (res.body.status === 'finished')) {
+                clearInterval(timerRet);
+                resolve(res.body);
+            }
+        });
     }
 }
+exports.GraphHopperOptimization = GraphHopperOptimization;
