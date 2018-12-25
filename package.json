@@ -1,8 +1,10 @@
 {
   "name": "graphhopper-ts-client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "A GraphHopper API client written in TypeScript",
+  "keywords": ["GraphHopper", "Map"],
+  "main": "dist/gh-optimization-client.js",
+  "types": "dist/*.d.ts",
   "scripts": {
     "build": "./node_modules/.bin/webpack --config webpack.prod.ts",
     "start": "./node_modules/.bin/webpack-dev-server --open --config webpack.dev.ts",
@@ -14,6 +16,7 @@
     "url": "https://github.com/massimosiani"
   },
   "license": "ISC",
+  "files": ["dist/**/*"],
   "dependencies": {
     "superagent": "^4.0.0"
   },

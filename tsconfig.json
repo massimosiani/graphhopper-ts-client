@@ -8,6 +8,7 @@
         "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
         "noEmitOnError": true,
+        "strict": true,
         "outDir": "dist",
         "lib": [
             "es6",
@@ -16,6 +17,7 @@
         ],
         "baseUrl": "."
     },
+    "include": ["src"],
     "exclude": [
         "node_modules",
         "webpack.*"
