@@ -7,7 +7,7 @@
         "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
         "noEmitOnError": true,
-        "outDir": "build",
+        "outDir": "dist",
         "lib": [
             "es6",
             "dom",
