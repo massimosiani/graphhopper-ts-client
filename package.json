@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "A GraphHopper API client written in TypeScript",
   "keywords": ["GraphHopper", "Map"],
-  "main": "dist/gh-optimization-client.bundle.js",
-  "module": "./esm5/gh-optimization-client.bundle.js",
-  "es2015": "./esm2015/gh-optimization-client.js",
+  "main": "./dist/esm2015/optimization-client.js",
+  "module": "./dist/esm5/gh-optimization-client.bundle.js",
+  "es2015": "./dist/esm2015/optimization-client.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "./node_modules/.bin/webpack --config webpack.prod.ts && tsc --target es2018 --outDir dist/esm2015",
