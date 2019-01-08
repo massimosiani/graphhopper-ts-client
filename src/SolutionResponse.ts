@@ -1,13 +1,15 @@
 import { Address } from './Address';
 import { Break, Service, Shipment } from './OptimizeRequest';
 
+type ActivityType = 'start' | 'pickup' | 'break' | 'end';
+
 export interface Point {
     coordinates: number[][];
     type: string;
 }
 
 export interface Activity {
-    type: string;
+    type: ActivityType;
     location_id: string;
     address: Address;
     end_time: number;
@@ -21,6 +23,7 @@ export interface Activity {
     arr_time?: number;
     arr_date_time?: any;
     load_before: number[];
+    break: Break;
 }
 
 export interface Route {
@@ -35,11 +38,17 @@ export interface Route {
     activities: Activity[];
 }
 
+export interface UnassignedDetails {
+    id: string;
+    code: number;
+    reason: string;
+}
+
 export interface Unassigned {
     services: Service[];
     shipments: Shipment[];
     breaks: Break[];
-    details: any[];
+    details: UnassignedDetails[];
 }
 
 export interface Solution {
