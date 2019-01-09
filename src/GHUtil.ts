@@ -1,6 +1,6 @@
 export default new class GHUtil {
     clone<T>(obj: T): T {
-        const newObj: T = {} as T;
+        const newObj: T = {} as unknown as T;
         for (const prop in obj) {
             if (obj.hasOwnProperty(prop)) {
                 newObj[prop] = obj[prop];
@@ -82,7 +82,7 @@ export default new class GHUtil {
         return array;
     }
 
-    extractError(res: string | { body: string | { message: string } } | any, url: string) {
+    extractError(res: string | { body: string | { message: string } } | any, url: string, requestBody: string) {
         let msg: string;
 
         if (typeof res === 'string') {
@@ -94,7 +94,7 @@ export default new class GHUtil {
             msg = res;
         }
 
-        return new Error(`${msg} for url ${url}`);
+        return new Error(`${msg} for url ${url} with body ${requestBody}`);
     }
 
     isArray(value: any) {

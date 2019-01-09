@@ -220,7 +220,7 @@ export class GraphHopperOptimization {
                     .timeout(args.postTimeout)
                     .end((err: any, res: { ok: boolean; body: OptimizeResponse; }) => {
                         if (err || !res.ok) {
-                            reject(GHUtil.extractError(res, url));
+                            reject(GHUtil.extractError(res, url, JSON.stringify(jsonInput)));
                         } else if (res) {
                             const solutionUrl =
                                 `${args.host}${args.basePath}/solution/${res.body.job_id}?key=${args.key}`;
