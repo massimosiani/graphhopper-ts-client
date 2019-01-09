@@ -9,7 +9,7 @@ declare const _default: {
             (arg0: number): number;
         };
     }, is3D: any): number[][];
-    extractError(res: any, url: string): Error;
+    extractError(res: any, url: string, requestBody?: string): Error;
     isArray(value: any): boolean;
     isObject(value: any): boolean;
     isString(value: any): value is string;

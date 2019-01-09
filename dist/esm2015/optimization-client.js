@@ -191,7 +191,7 @@ class GraphHopperOptimization {
                 .timeout(args.postTimeout)
                 .end((err, res) => {
                 if (err || !res.ok) {
-                    reject(GHUtil_1.default.extractError(res, url));
+                    reject(GHUtil_1.default.extractError(res, url, JSON.stringify(jsonInput)));
                 }
                 else if (res) {
                     const solutionUrl = `${args.host}${args.basePath}/solution/${res.body.job_id}?key=${args.key}`;

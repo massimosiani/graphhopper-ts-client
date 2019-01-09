@@ -68,7 +68,7 @@ exports.default = new class GHUtil {
         }
         return array;
     }
-    extractError(res, url) {
+    extractError(res, url, requestBody = '') {
         let msg;
         if (typeof res === 'string') {
             msg = res;
@@ -80,7 +80,7 @@ exports.default = new class GHUtil {
         else {
             msg = res;
         }
-        return new Error(`${msg} for url ${url}`);
+        return new Error(`${msg} for url ${url} with body ${requestBody}`);
     }
     isArray(value) {
         const stringValue = Object.prototype.toString.call(value);

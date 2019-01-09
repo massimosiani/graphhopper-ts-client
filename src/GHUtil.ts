@@ -82,7 +82,7 @@ export default new class GHUtil {
         return array;
     }
 
-    extractError(res: string | { body: string | { message: string } } | any, url: string, requestBody: string) {
+    extractError(res: string | { body: string | { message: string } } | any, url: string, requestBody = '') {
         let msg: string;
 
         if (typeof res === 'string') {
