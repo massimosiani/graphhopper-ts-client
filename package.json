@@ -1,6 +1,6 @@
 {
   "name": "graphhopper-ts-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A GraphHopper API client written in TypeScript",
   "keywords": ["GraphHopper", "Map"],
   "main": "./dist/esm2015/optimization-client.js",

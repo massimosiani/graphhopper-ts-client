@@ -52,6 +52,7 @@ export interface Unassigned {
 }
 
 export interface Solution {
+    name?: string;
     costs: number;
     distance: number;
     time: number;
