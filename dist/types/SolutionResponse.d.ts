@@ -45,6 +45,7 @@ export interface Unassigned {
     details: UnassignedDetails[];
 }
 export interface Solution {
+    name?: string;
     costs: number;
     distance: number;
     time: number;
